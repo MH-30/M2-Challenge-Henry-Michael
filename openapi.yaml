@@ -3,47 +3,74 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:8081
     description: Generated server url
 paths:
-  /echo/{input}:
+  /{name}:
     get:
       tags:
-        - echo-range-service-controller
-      operationId: echo
+        - chatterbook-controller
+      operationId: username
       parameters:
-        - name: input
+        - name: name
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
       responses:
         '200':
           description: OK
           content:
             '*/*':
               schema:
-                type: integer
-                format: int32
-        '422':
-          description: Unprocessable Entity
+                $ref: '#/components/schemas/User'
+  /userlist:
+    get:
+      tags:
+        - chatterbook-controller
+      operationId: getUserList
+      responses:
+        '200':
+          description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/CustomErrorResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /chatterposts/{name}:
+    get:
+      tags:
+        - chatterbook-controller
+      operationId: usernameList
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatterPost'
 components:
   schemas:
-    CustomErrorResponse:
+    ChatterPost:
       type: object
       properties:
-        errorMsg:
+        text:
           type: string
-        status:
-          type: integer
-          format: int32
-        errorCode:
+    User:
+      type: object
+      properties:
+        name:
           type: string
-        timestamp:
-          type: string
-          format: date-time
+        chatterPosts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatterPost'
